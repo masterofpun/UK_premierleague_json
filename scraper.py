@@ -4,7 +4,7 @@ requests_cache.install_cache('premierleague')
 req = requests.Session()
 
 bLink = 'http://www.premierleague.com/match/'
-m = 0
+m = 5946
 
 headers = {'User-Agent':'Python script gathering some data for research, will poll once a day after an initial dump; contact at: reddit.com/u/hypd09', 'Accept-Encoding': 'gzip', 'Content-Encoding': 'gzip'}
 
@@ -16,7 +16,7 @@ c = conn.cursor()
 
 c.execute("CREATE TABLE IF NOT EXISTS data (matchData)")
 
-while(True):
+while(m<12495):
     m += 1
     link = bLink+str(m)
     print(m)
