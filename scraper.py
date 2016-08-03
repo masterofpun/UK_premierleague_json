@@ -13,10 +13,11 @@ headers = {'User-Agent':'Python script gathering some data for research, will po
 DB_FILE = 'data.sqlite'
 conn = sqlite3.connect(DB_FILE)
 c = conn.cursor()
+
 c.execute("CREATE TABLE IF NOT EXISTS data (matchData)")
 
 while(True):
-    m += 1000
+    m += 1
     link = bLink+str(m)
 
     siteData = req.get(link,headers=headers).text
