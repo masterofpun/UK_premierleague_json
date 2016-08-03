@@ -18,7 +18,7 @@ c.execute("CREATE TABLE IF NOT EXISTS data (matchData)")
 
 while(True):
     m += 1
-    link = bLink+str(m)'
+    link = bLink+str(m)
     print(m)
 
     siteData = req.get(link,headers=headers).text
