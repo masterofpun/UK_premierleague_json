@@ -18,21 +18,20 @@ c.execute("CREATE TABLE IF NOT EXISTS data (matchData)")
 
 while(True):
     m += 1
-    link = bLink+str(m)
+    link = bLink+str(m)'
+    print(m)
 
     siteData = req.get(link,headers=headers).text
     
     data = None
     try:
         data = siteData.split("data-fixture='")[1].split("'>")[0]
+        jdata = json.loads(data)
     except IndexError:
-        allData.append({})
-        continue
-    
-    print(data)
-    jdata = json.loads(data)
+        jdata = {}
 
-    if len(jdata.keys())<17:
+        
+    if len(jdata.keys())>0 and len(jdata.keys())<17:
         print('doh',m)
         break;
     
@@ -41,6 +40,3 @@ while(True):
 
 conn.commit()
 c.close()
-
-##with open('premierleague'+str(time.time()).split('.')[0]+'.json','w') as file:
-##    file.write(json.dumps(allData,indent=4,sort_keys=True))
