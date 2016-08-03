@@ -31,7 +31,7 @@ while(m<12495):
         jdata = {}
 
         
-    if len(jdata.keys())>0 and len(jdata.keys())<17:
+    if len(jdata.keys())==12:
         print('doh',m)
         break;
     
