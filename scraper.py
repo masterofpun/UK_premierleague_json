@@ -1,24 +1,45 @@
-# This is a template for a Python scraper on morph.io (https://morph.io)
-# including some code snippets below that you should find helpful
+import requests, requests_cache, json, dateutil.parser, sqlite3
 
-# import scraperwiki
-# import lxml.html
-#
-# # Read in a page
-# html = scraperwiki.scrape("http://foo.com")
-#
-# # Find something on the page using css selectors
-# root = lxml.html.fromstring(html)
-# root.cssselect("div[align='left']")
-#
-# # Write out to the sqlite database using scraperwiki library
-# scraperwiki.sqlite.save(unique_keys=['name'], data={"name": "susan", "occupation": "software developer"})
-#
-# # An arbitrary query against the database
-# scraperwiki.sql.select("* from data where 'name'='peter'")
+requests_cache.install_cache('premierleague')
+req = requests.Session()
 
-# You don't have to do things with the ScraperWiki and lxml libraries.
-# You can use whatever libraries you want: https://morph.io/documentation/python
-# All that matters is that your final data is written to an SQLite database
-# called "data.sqlite" in the current working directory which has at least a table
-# called "data".
+bLink = 'http://www.premierleague.com/match/'
+m = 0
+
+headers = {'User-Agent':'Python script gathering some data for research, will poll once a day after an initial dump; contact at: reddit.com/u/hypd09', 'Accept-Encoding': 'gzip', 'Content-Encoding': 'gzip'}
+
+#attendance,duration,events,season,week,level,ground_city,ground_name,teamA_halftimeScore,teamB_halftimeScore,kickoff_time,official,outcome,teamA_team_score,teamA_team_name,teamA_team_abbr,teamB_team_score,teamB_team_name,teamB_team_abbr
+
+DB_FILE = 'data.sqlite'
+conn = sqlite3.connect(DB_FILE)
+c = conn.cursor()
+c.execute("CREATE TABLE IF NOT EXISTS data (matchData)")
+
+while(True):
+    m += 1000
+    link = bLink+str(m)
+
+    siteData = req.get(link,headers=headers).text
+    
+    data = None
+    try:
+        data = siteData.split("data-fixture='")[1].split("'>")[0]
+    except IndexError:
+        allData.append({})
+        continue
+    
+    print(data)
+    jdata = json.loads(data)
+
+    if len(jdata.keys())<17:
+        print('doh',m)
+        break;
+    
+    c.execute('INSERT INTO data VALUES (?)',[json.dumps(jdata,sort_keys=True)])
+
+
+conn.commit()
+c.close()
+
+##with open('premierleague'+str(time.time()).split('.')[0]+'.json','w') as file:
+##    file.write(json.dumps(allData,indent=4,sort_keys=True))
